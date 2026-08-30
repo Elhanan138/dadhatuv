@@ -1,0 +1,91 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 40 20% 98%;
+    --foreground: 240 10% 12%;
+    --card: 0 0% 100%;
+    --card-foreground: 240 10% 12%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 240 10% 12%;
+    --primary: 158 64% 32%;
+    --primary-foreground: 150 40% 98%;
+    --secondary: 240 5% 94%;
+    --secondary-foreground: 240 10% 20%;
+    --muted: 240 5% 95%;
+    --muted-foreground: 240 4% 44%;
+    --accent: 36 92% 48%;
+    --accent-foreground: 30 40% 12%;
+    --destructive: 0 72% 46%;
+    --destructive-foreground: 0 0% 100%;
+    --success: 158 64% 36%;
+    --success-foreground: 0 0% 100%;
+    --warn: 36 92% 46%;
+    --warn-foreground: 30 40% 12%;
+    --border: 240 6% 88%;
+    --input: 240 6% 88%;
+    --ring: 158 64% 32%;
+    --radius: 0.75rem;
+  }
+
+  .dark {
+    --background: 240 8% 8%;
+    --foreground: 240 6% 94%;
+    --card: 240 7% 11%;
+    --card-foreground: 240 6% 94%;
+    --popover: 240 7% 11%;
+    --popover-foreground: 240 6% 94%;
+    --primary: 158 58% 44%;
+    --primary-foreground: 158 40% 6%;
+    --secondary: 240 5% 17%;
+    --secondary-foreground: 240 6% 92%;
+    --muted: 240 5% 16%;
+    --muted-foreground: 240 5% 62%;
+    --accent: 36 88% 56%;
+    --accent-foreground: 30 40% 8%;
+    --destructive: 0 62% 52%;
+    --destructive-foreground: 0 0% 100%;
+    --success: 158 56% 48%;
+    --success-foreground: 158 40% 6%;
+    --warn: 36 86% 56%;
+    --warn-foreground: 30 40% 8%;
+    --border: 240 5% 20%;
+    --input: 240 5% 22%;
+    --ring: 158 58% 44%;
+  }
+
+  * { @apply border-border; }
+  html { -webkit-tap-highlight-color: transparent; }
+  body {
+    @apply bg-background text-foreground antialiased;
+    text-rendering: optimizeLegibility;
+  }
+  ::-webkit-scrollbar { width: 10px; height: 10px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { @apply bg-border rounded-full; }
+  :focus-visible { @apply outline-none ring-2 ring-ring ring-offset-2 ring-offset-background; }
+  input[type="number"]::-webkit-outer-spin-button,
+  input[type="number"]::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+  input[type="number"] { -moz-appearance: textfield; }
+}
+
+@keyframes sweep { 0% { transform: translateX(100%); } 100% { transform: translateX(-100%); } }
+
+@layer utilities {
+  .num { font-variant-numeric: tabular-nums; direction: ltr; unicode-bidi: isolate; }
+  .skeleton { @apply relative overflow-hidden bg-muted rounded-md; }
+  .skeleton::after {
+    content: "";
+    @apply absolute inset-0;
+    background: linear-gradient(90deg, transparent, hsl(var(--foreground) / 0.06), transparent);
+    animation: sweep 1.4s infinite;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
+}
+
+.recharts-wrapper, .recharts-surface { direction: ltr; }
