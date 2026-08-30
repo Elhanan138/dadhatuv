@@ -1,0 +1,11 @@
+# Optional second host. Vercel deploys from the same repo and is unaffected by this file.
+[build]
+  command = "npm run build"
+  publish = ".next"
+
+[build.environment]
+  NODE_VERSION = "20"
+
+# Netlify's Next.js runtime — handles the App Router, image optimisation and headers.
+[[plugins]]
+  package = "@netlify/plugin-nextjs"
