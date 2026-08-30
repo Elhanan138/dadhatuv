@@ -10,6 +10,7 @@ import { MeasurementsCard } from "@/components/progress/measurements-card";
 import { useStore, useToday } from "@/lib/store";
 import { adherence, movingAverage, sumEntries } from "@/lib/calc";
 import { lastNDays } from "@/lib/utils";
+import type { LogEntry } from "@/lib/types";
 
 const RANGES = [
   { key: "14", label: "14 יום", days: 14 },
@@ -28,7 +29,7 @@ export default function ProgressPage() {
   );
 
   const entriesByDate = React.useMemo(() => {
-    const map = new Map<string, typeof state.entries>();
+    const map = new Map<string, LogEntry[]>();
     for (const e of state.entries) {
       const list = map.get(e.date) ?? [];
       list.push(e);

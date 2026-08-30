@@ -1,6 +1,22 @@
 import type { Metadata, Viewport } from "next";
+import { Assistant, Rubik } from "next/font/google";
 import "./globals.css";
 import { Providers } from "@/app/providers";
+
+// self-hosted at build time: no render-blocking request to Google, no layout shift
+const assistant = Assistant({
+  subsets: ["hebrew", "latin"],
+  weight: ["400", "500", "600", "700"],
+  variable: "--font-sans",
+  display: "swap",
+});
+
+const rubik = Rubik({
+  subsets: ["hebrew", "latin"],
+  weight: ["500", "600", "700", "800"],
+  variable: "--font-display",
+  display: "swap",
+});
 
 export const metadata: Metadata = {
   title: "אבא חטוב — ניהול הרכב גוף",
@@ -22,15 +38,7 @@ export const viewport: Viewport = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="he" dir="rtl" suppressHydrationWarning>
-      <head>
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="" />
-        <link
-          href="https://fonts.googleapis.com/css2?family=Assistant:wght@400;500;600;700&family=Rubik:wght@500;600;700;800&display=swap"
-          rel="stylesheet"
-        />
-      </head>
+    <html lang="he" dir="rtl" className={`${assistant.variable} ${rubik.variable}`} suppressHydrationWarning>
       <body className="font-sans">
         <Providers>{children}</Providers>
       </body>

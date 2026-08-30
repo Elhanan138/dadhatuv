@@ -7,8 +7,8 @@ const config: Config = {
     container: { center: true, padding: "1rem", screens: { "2xl": "1360px" } },
     extend: {
       fontFamily: {
-        sans: ["Assistant", "Heebo", "system-ui", "sans-serif"],
-        display: ["Rubik", "Assistant", "system-ui", "sans-serif"],
+        sans: ["var(--font-sans)", "Assistant", "Heebo", "system-ui", "sans-serif"],
+        display: ["var(--font-display)", "Rubik", "Assistant", "system-ui", "sans-serif"],
         mono: ["ui-monospace", "SFMono-Regular", "Menlo", "monospace"],
       },
       colors: {
