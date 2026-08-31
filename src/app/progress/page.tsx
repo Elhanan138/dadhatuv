@@ -5,8 +5,29 @@ import { LineChart, TrendingDown } from "lucide-react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { EmptyState } from "@/components/ui/empty-state";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { AdherenceChart, IntakeChart, MacroSplit, WeightChart } from "@/components/progress/charts";
+import dynamic from "next/dynamic";
 import { MeasurementsCard } from "@/components/progress/measurements-card";
+import { InsightsCard } from "@/components/progress/insights";
+import { Skeleton } from "@/components/ui/skeleton";
+
+// recharts is ~120 kB and only this page needs it — keep it out of the shared bundle
+const chartLoading = () => <Skeleton className="h-[240px] w-full" />;
+const WeightChart = dynamic(() => import("@/components/progress/charts").then((m) => m.WeightChart), {
+  ssr: false,
+  loading: chartLoading,
+});
+const IntakeChart = dynamic(() => import("@/components/progress/charts").then((m) => m.IntakeChart), {
+  ssr: false,
+  loading: chartLoading,
+});
+const AdherenceChart = dynamic(() => import("@/components/progress/charts").then((m) => m.AdherenceChart), {
+  ssr: false,
+  loading: chartLoading,
+});
+const MacroSplit = dynamic(() => import("@/components/progress/charts").then((m) => m.MacroSplit), {
+  ssr: false,
+  loading: chartLoading,
+});
 import { useStore, useToday } from "@/lib/store";
 import { adherence, movingAverage, sumEntries } from "@/lib/calc";
 import { lastNDays } from "@/lib/utils";
@@ -105,6 +126,8 @@ export default function ProgressPage() {
         />
       ) : (
         <>
+          <InsightsCard dayKeys={days} />
+
           <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
             <Summary label="שינוי במשקל" value={netChange != null ? `${netChange > 0 ? "+" : ""}${netChange} ק״ג` : "—"} />
             <Summary label="ממוצע קלוריות" value={avgKcal ? `${avgKcal} קק״ל` : "—"} />

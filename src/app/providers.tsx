@@ -5,6 +5,7 @@ import { usePathname, useRouter } from "next/navigation";
 import { ThemeProvider } from "@/components/layout/theme-provider";
 import { ToastProvider } from "@/components/ui/toast";
 import { AppShell } from "@/components/layout/app-shell";
+import { ServiceWorkerManager } from "@/components/layout/pwa";
 import { StoreProvider, useStore } from "@/lib/store";
 import { PageSkeleton } from "@/components/ui/skeleton";
 
@@ -16,6 +17,7 @@ export function Providers({ children }: { children: React.ReactNode }) {
           <OnboardingGate>
             <AppShell>{children}</AppShell>
           </OnboardingGate>
+          <ServiceWorkerManager />
         </ToastProvider>
       </StoreProvider>
     </ThemeProvider>

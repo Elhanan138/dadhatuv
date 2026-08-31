@@ -10,7 +10,10 @@ import { Stat } from "@/components/ui/stat";
 import { Badge } from "@/components/ui/badge";
 import { MealBlock } from "@/components/log/meal-block";
 import { WaterCard } from "@/components/log/water-card";
-import { FastingCard } from "@/components/log/fasting-card";
+import { FastingTimer } from "@/components/log/fasting-timer";
+import { NextMealCard } from "@/components/log/next-meal";
+import { QuickAdd } from "@/components/log/quick-add";
+import { InstallBanner } from "@/components/layout/pwa";
 import { AddEntryDialog } from "@/components/log/add-entry-dialog";
 import { useStore, useToday } from "@/lib/store";
 import { adherence, movingAverage, projectedWeeks, sumEntries, tdee } from "@/lib/calc";
@@ -82,6 +85,16 @@ export default function DashboardPage() {
         </div>
       )}
 
+      <InstallBanner />
+
+      {/* the two answers first: what to eat, and how long until you can */}
+      <div className="grid gap-4 lg:grid-cols-2">
+        <NextMealCard date={today} />
+        <FastingTimer date={today} />
+      </div>
+
+      <QuickAdd date={today} />
+
       <Card>
         <CardContent className="flex flex-wrap items-center gap-6 pt-4">
           <Ring value={score.overall} label={`${score.overall}%`} sublabel="היצמדות" />
@@ -102,7 +115,6 @@ export default function DashboardPage() {
       </div>
 
       <div className="grid gap-4 lg:grid-cols-2">
-        <FastingCard date={today} />
         <div className="space-y-4">
           <WaterCard date={today} />
 

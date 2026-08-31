@@ -1,7 +1,7 @@
 "use client";
 
 import * as React from "react";
-import { CalendarDays, ChevronLeft, ChevronRight, Plus, Trophy, X } from "lucide-react";
+import { CalendarDays, ChevronDown, ChevronLeft, ChevronRight, Plus, Trophy, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input, Textarea } from "@/components/ui/input";
@@ -9,12 +9,14 @@ import { Stat } from "@/components/ui/stat";
 import { Badge } from "@/components/ui/badge";
 import { MealBlock } from "@/components/log/meal-block";
 import { WaterCard } from "@/components/log/water-card";
-import { FastingCard } from "@/components/log/fasting-card";
+import { FastingTimer } from "@/components/log/fasting-timer";
+import { NextMealCard } from "@/components/log/next-meal";
+import { QuickAdd } from "@/components/log/quick-add";
 import { AddEntryDialog } from "@/components/log/add-entry-dialog";
 import { useStore, useToday } from "@/lib/store";
 import { adherence, sumEntries } from "@/lib/calc";
 import type { MealBlockId } from "@/lib/types";
-import { formatDateHe, relativeDayHe, shiftKey, todayKey } from "@/lib/utils";
+import { cn, formatDateHe, relativeDayHe, shiftKey, todayKey } from "@/lib/utils";
 
 export default function LogPage() {
   const today = useToday();
@@ -23,12 +25,14 @@ export default function LogPage() {
   const [dialogOpen, setDialogOpen] = React.useState(false);
   const [block, setBlock] = React.useState<MealBlockId>("break_fast");
   const [nsvDraft, setNsvDraft] = React.useState("");
+  const [showJournal, setShowJournal] = React.useState(false);
 
   const entries = React.useMemo(() => state.entries.filter((e) => e.date === date), [state.entries, date]);
   const totals = sumEntries(entries);
   const day = getDay(date);
   const score = adherence(day, totals, targets, state.profile?.fasting.fast ?? 16);
   const isFuture = date > todayKey();
+  const hasJournal = day.nsv.length > 0 || !!day.note;
 
   function openAdd(b: MealBlockId) {
     setBlock(b);
@@ -83,6 +87,14 @@ export default function LogPage() {
         </div>
       </header>
 
+      {/* what to do next, before anything that asks for input */}
+      <div className="grid gap-4 lg:grid-cols-2">
+        <NextMealCard date={date} />
+        <FastingTimer date={date} />
+      </div>
+
+      <QuickAdd date={date} />
+
       <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-5">
         <Stat label="קלוריות" value={totals.kcal} target={targets.kcal} />
         <Stat label="חלבון" value={totals.protein} unit="ג׳" target={targets.protein} tone="success" />
@@ -95,7 +107,7 @@ export default function LogPage() {
         <Badge variant={score.overall >= 85 ? "green" : score.overall >= 60 ? "yellow" : "red"}>
           היצמדות {score.overall}%
         </Badge>
-        <Badge variant="green">{totals.greenCount} פריטים ירוקים</Badge>
+        {totals.greenCount > 0 && <Badge variant="green">{totals.greenCount} פריטים ירוקים</Badge>}
         {totals.redCount > 0 && <Badge variant="red">{totals.redCount} פריטים אדומים</Badge>}
       </div>
 
@@ -105,12 +117,25 @@ export default function LogPage() {
         <MealBlock block="snack" entries={entries.filter((e) => e.block === "snack")} onAdd={openAdd} />
       </div>
 
-      <div className="grid gap-4 lg:grid-cols-2">
-        <FastingCard date={date} />
-        <div className="space-y-4">
-          <WaterCard date={date} />
+      <WaterCard date={date} />
 
-          <Card>
+      {/* optional, and out of the way until asked for */}
+      <div>
+        <button
+          type="button"
+          onClick={() => setShowJournal((s) => !s)}
+          className="flex items-center gap-1.5 text-sm text-muted-foreground transition-colors hover:text-foreground"
+          aria-expanded={showJournal || hasJournal}
+        >
+          <ChevronDown
+            className={cn("h-4 w-4 transition-transform", (showJournal || hasJournal) && "rotate-180")}
+          />
+          יומן אישי — ניצחונות והערות
+          {hasJournal && <Badge variant="green">{day.nsv.length + (day.note ? 1 : 0)}</Badge>}
+        </button>
+
+        {(showJournal || hasJournal) && (
+          <Card className="mt-3">
             <CardHeader className="pb-1">
               <CardTitle className="flex items-center gap-2">
                 <Trophy className="h-4 w-4 text-accent" />
@@ -156,7 +181,7 @@ export default function LogPage() {
               />
             </CardContent>
           </Card>
-        </div>
+        )}
       </div>
 
       <AddEntryDialog open={dialogOpen} onOpenChange={setDialogOpen} date={date} defaultBlock={block} />
